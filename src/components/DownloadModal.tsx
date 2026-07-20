@@ -45,10 +45,10 @@ export default function DownloadModal({ isOpen, onClose }: DownloadModalProps) {
               
               <Smartphone className="w-12 h-12 mx-auto mb-4 animate-bounce" />
               <h3 className="font-heading text-2xl font-bold tracking-tight mb-2">
-                Download SOLO SG App
+                Download Explore SG App
               </h3>
               <p className="text-sm text-white/80 max-w-sm mx-auto leading-relaxed">
-                Take the ultimate Singapore solo companion with you. Works offline, keeps you safe, and coordinates transit.
+                Take the ultimate Singapore travel companion with you. Works offline, keeps you safe, and coordinates transit.
               </p>
             </div>
 
@@ -70,7 +70,7 @@ export default function DownloadModal({ isOpen, onClose }: DownloadModalProps) {
                     <Compass className="w-5 h-5" />
                   </div>
                   <div>
-                    <h4 className="font-bold text-onyx text-sm sm:text-base">Solo Companion Safety SOS</h4>
+                    <h4 className="font-bold text-onyx text-sm sm:text-base">Smart Companion Safety SOS</h4>
                     <p className="text-xs sm:text-sm text-slate">Instant access to local emergency contacts and safe-travel hubs.</p>
                   </div>
                 </div>

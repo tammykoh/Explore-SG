@@ -1,5 +1,6 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, Component } from "react";
 import { motion, AnimatePresence } from "motion/react";
+import { DiscussionEmbed } from "disqus-react";
 import {
   Heart,
   User,
@@ -17,7 +18,8 @@ import {
   Share2,
   BookmarkCheck,
   AwardIcon,
-  HelpCircle
+  HelpCircle,
+  MessageSquare
 } from "lucide-react";
 
 import { PERSONAS } from "./data";
@@ -31,6 +33,7 @@ import SingaporeMap from "./components/SingaporeMap";
 
 export default function App() {
   // Navigation & UI States
+  const [activeAppTab, setActiveAppTab] = useState<'guide' | 'social'>('guide');
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isSafetyOpen, setIsSafetyOpen] = useState(false);
   const [isDownloadOpen, setIsDownloadOpen] = useState(false);
@@ -39,12 +42,30 @@ export default function App() {
   const [showLoginToast, setShowLoginToast] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
 
+  const showSolidNavbar = isScrolled || activeAppTab !== "guide";
+
   useEffect(() => {
     const handleScroll = () => {
       setIsScrolled(window.scrollY > 40);
     };
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
+
+  useEffect(() => {
+    const handleGlobalError = (event: ErrorEvent) => {
+      // Catch disqus or other cross-origin script error triggers to prevent platform crash overlays
+      if (
+        event.message === "Script error." ||
+        (event.filename && (event.filename.includes("disqus") || event.filename.includes("disq.us") || event.filename.includes("disquscdn")))
+      ) {
+        event.preventDefault();
+        console.warn("Muted cross-origin third-party script error:", event.message, event.filename);
+      }
+    };
+
+    window.addEventListener("error", handleGlobalError);
+    return () => window.removeEventListener("error", handleGlobalError);
   }, []);
   
   // Favorites & Completion trackers (Persisted in localStorage)
@@ -94,58 +115,74 @@ export default function App() {
   };
 
   const handleScrollTo = (id: string) => {
-    const element = document.getElementById(id);
-    if (element) {
-      element.scrollIntoView({ behavior: "smooth" });
-    }
+    setActiveAppTab("guide");
     setIsMobileMenuOpen(false);
+    setTimeout(() => {
+      if (id === "root") {
+        window.scrollTo({ top: 0, behavior: "smooth" });
+        return;
+      }
+      const element = document.getElementById(id);
+      if (element) {
+        element.scrollIntoView({ behavior: "smooth" });
+      }
+    }, 100);
   };
 
   return (
     <div className="bg-background text-on-background font-sans min-h-screen flex flex-col selection:bg-singapore-red/10 selection:text-singapore-red">
       
       {/* 1. Header Navigation */}
-      <nav className={`fixed top-0 left-0 right-0 h-20 transition-all duration-300 z-40 px-4 sm:px-8 md:px-16 flex justify-between items-center ${isScrolled ? "bg-white/95 backdrop-blur-md border-b border-cloud shadow-sm text-onyx" : "bg-transparent border-b border-transparent text-white"}`}>
+      <nav className={`fixed top-0 left-0 right-0 h-20 transition-all duration-300 z-40 px-4 sm:px-8 md:px-16 flex justify-between items-center ${showSolidNavbar ? "bg-white/95 backdrop-blur-md border-b border-cloud shadow-sm text-onyx" : "bg-transparent border-b border-transparent text-white"}`}>
         <div className="flex items-center gap-10">
           {/* Logo */}
           <span
             onClick={() => handleScrollTo("root")}
-            className={`font-heading text-xl sm:text-2xl font-extrabold tracking-wider select-none cursor-pointer transition-all ${isScrolled ? "text-singapore-red hover:opacity-90" : "text-white hover:text-white/90"}`}
+            className={`font-heading text-xl sm:text-2xl font-extrabold tracking-wider select-none cursor-pointer transition-all ${showSolidNavbar ? "text-singapore-red hover:opacity-90" : "text-white hover:text-white/90"}`}
           >
-            SOLO SG
+            EXPLORE SG
           </span>
 
           {/* Desktop Nav Links */}
           <div className="hidden md:flex gap-8 items-center">
             <button
-              onClick={() => handleScrollTo("introduction")}
-              className={`font-sans text-sm font-semibold transition-all cursor-pointer ${isScrolled ? "text-onyx hover:text-singapore-red" : "text-white/90 hover:text-white"}`}
-            >
-              Explore
-            </button>
-            <button
               onClick={() => handleScrollTo("interactive-map-section")}
-              className={`font-sans text-sm font-semibold transition-all cursor-pointer ${isScrolled ? "text-onyx hover:text-singapore-red" : "text-white/90 hover:text-white"}`}
+              className={`font-sans text-sm font-semibold transition-all cursor-pointer ${activeAppTab === "guide" && showSolidNavbar ? "text-onyx hover:text-singapore-red" : activeAppTab === "guide" ? "text-white/90 hover:text-white" : showSolidNavbar ? "text-onyx/65 hover:text-singapore-red" : "text-white/70 hover:text-white"}`}
             >
               Map
             </button>
             <button
+              onClick={() => handleScrollTo("introduction")}
+              className={`font-sans text-sm font-semibold transition-all cursor-pointer ${activeAppTab === "guide" && showSolidNavbar ? "text-onyx hover:text-singapore-red" : activeAppTab === "guide" ? "text-white/90 hover:text-white" : showSolidNavbar ? "text-onyx/65 hover:text-singapore-red" : "text-white/70 hover:text-white"}`}
+            >
+              Explore
+            </button>
+            <button
               onClick={() => handleScrollTo("personas-itineraries-container")}
-              className={`font-sans text-sm font-semibold transition-all cursor-pointer ${isScrolled ? "text-onyx hover:text-singapore-red" : "text-white/90 hover:text-white"}`}
+              className={`font-sans text-sm font-semibold transition-all cursor-pointer ${activeAppTab === "guide" && showSolidNavbar ? "text-onyx hover:text-singapore-red" : activeAppTab === "guide" ? "text-white/90 hover:text-white" : showSolidNavbar ? "text-onyx/65 hover:text-singapore-red" : "text-white/70 hover:text-white"}`}
             >
               Itineraries
             </button>
             <button
               onClick={() => handleScrollTo("safety-insights")}
-              className={`font-sans text-sm font-semibold transition-all cursor-pointer ${isScrolled ? "text-onyx hover:text-singapore-red" : "text-white/90 hover:text-white"}`}
+              className={`font-sans text-sm font-semibold transition-all cursor-pointer ${activeAppTab === "guide" && showSolidNavbar ? "text-onyx hover:text-singapore-red" : activeAppTab === "guide" ? "text-white/90 hover:text-white" : showSolidNavbar ? "text-onyx/65 hover:text-singapore-red" : "text-white/70 hover:text-white"}`}
             >
               Insights
             </button>
             <button
               onClick={() => handleScrollTo("community-section")}
-              className={`font-sans text-sm font-semibold transition-all cursor-pointer ${isScrolled ? "text-onyx hover:text-singapore-red" : "text-white/90 hover:text-white"}`}
+              className={`font-sans text-sm font-semibold transition-all cursor-pointer ${activeAppTab === "guide" && showSolidNavbar ? "text-onyx hover:text-singapore-red" : activeAppTab === "guide" ? "text-white/90 hover:text-white" : showSolidNavbar ? "text-onyx/65 hover:text-singapore-red" : "text-white/70 hover:text-white"}`}
             >
               Community
+            </button>
+            <button
+              onClick={() => {
+                setActiveAppTab("social");
+                window.scrollTo({ top: 0, behavior: "smooth" });
+              }}
+              className={`font-sans text-sm font-bold transition-all cursor-pointer ${activeAppTab === "social" ? "text-singapore-red" : showSolidNavbar ? "text-onyx hover:text-singapore-red" : "text-white/90 hover:text-white"}`}
+            >
+              Social
             </button>
           </div>
         </div>
@@ -157,7 +194,7 @@ export default function App() {
           <div className="relative">
             <button
               onClick={() => setShowFavoritesDropdown(!showFavoritesDropdown)}
-              className={`p-2 rounded-full transition-all relative cursor-pointer ${isScrolled ? "text-onyx hover:text-singapore-red hover:bg-stone-50" : "text-white hover:text-white/90 hover:bg-white/10"}`}
+              className={`p-2 rounded-full transition-all relative cursor-pointer ${showSolidNavbar ? "text-onyx hover:text-singapore-red hover:bg-stone-50" : "text-white hover:text-white/90 hover:bg-white/10"}`}
               aria-label="Favorites list"
             >
               <Heart className={`w-5 h-5 ${favorites.length > 0 ? "text-singapore-red fill-current" : ""}`} />
@@ -272,7 +309,7 @@ export default function App() {
           {/* Mobile Menu Toggle */}
           <button
             onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-            className={`p-2 rounded-lg md:hidden cursor-pointer ${isScrolled ? "text-onyx hover:bg-stone-50" : "text-white hover:bg-white/15"}`}
+            className={`p-2 rounded-lg md:hidden cursor-pointer ${showSolidNavbar ? "text-onyx hover:bg-stone-50" : "text-white hover:bg-white/15"}`}
             aria-label="Toggle menu"
           >
             {isMobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
@@ -291,16 +328,16 @@ export default function App() {
           >
             <div className="flex flex-col p-4 space-y-3 font-sans text-sm font-semibold text-onyx">
               <button
-                onClick={() => handleScrollTo("introduction")}
-                className="w-full text-left py-2 px-3 hover:bg-stone-50 hover:text-singapore-red rounded-lg transition-all cursor-pointer"
-              >
-                Explore
-              </button>
-              <button
                 onClick={() => handleScrollTo("interactive-map-section")}
                 className="w-full text-left py-2 px-3 hover:bg-stone-50 hover:text-singapore-red rounded-lg transition-all cursor-pointer"
               >
                 Interactive Map
+              </button>
+              <button
+                onClick={() => handleScrollTo("introduction")}
+                className="w-full text-left py-2 px-3 hover:bg-stone-50 hover:text-singapore-red rounded-lg transition-all cursor-pointer"
+              >
+                Explore
               </button>
               <button
                 onClick={() => handleScrollTo("personas-itineraries-container")}
@@ -319,6 +356,16 @@ export default function App() {
                 className="w-full text-left py-2 px-3 hover:bg-stone-50 hover:text-singapore-red rounded-lg transition-all cursor-pointer"
               >
                 Community
+              </button>
+              <button
+                onClick={() => {
+                  setActiveAppTab("social");
+                  setIsMobileMenuOpen(false);
+                  window.scrollTo({ top: 0, behavior: "smooth" });
+                }}
+                className={`w-full text-left py-2 px-3 rounded-lg transition-all cursor-pointer ${activeAppTab === "social" ? "bg-red-50 text-singapore-red font-bold" : "hover:bg-stone-50 hover:text-singapore-red"}`}
+              >
+                Social (Disqus Forum)
               </button>
             </div>
           </motion.div>
@@ -342,9 +389,11 @@ export default function App() {
             </motion.div>
           )}
         </AnimatePresence>
-
-        {/* 2. Hero Header Banner */}
-        <header className="relative h-[55vh] min-h-[380px] sm:min-h-[440px] w-full flex items-center overflow-hidden pt-20">
+        
+        {activeAppTab === "guide" ? (
+          <>
+            {/* 2. Hero Header Banner */}
+        <header className="relative min-h-[520px] sm:min-h-[600px] md:min-h-[660px] py-24 sm:py-32 w-full flex items-center overflow-hidden">
           <div className="absolute inset-0 z-0">
             <img
               alt="Solo Travel to Singapore"
@@ -357,32 +406,42 @@ export default function App() {
           
           <div className="relative z-10 px-4 sm:px-8 md:px-16 max-w-7xl mx-auto w-full">
             <div className="max-w-2xl text-white space-y-6">
-              <span className="inline-block bg-singapore-red px-3 py-1 font-sans text-[10px] sm:text-xs font-bold uppercase tracking-wider rounded">
-                Ultimate Guide
-              </span>
-              <h1 className="font-heading text-4xl sm:text-5xl md:text-6xl font-extrabold tracking-tight leading-none text-white">
-                Solo Travel to Singapore Guide
+              <div className="inline-flex items-center gap-2.5 px-3.5 py-1.5 border border-singapore-red/30 bg-singapore-red/10 rounded-full font-sans text-[10px] sm:text-xs font-bold uppercase tracking-widest text-white/95 backdrop-blur-md">
+                <span className="w-1.5 h-1.5 rounded-full bg-singapore-red animate-pulse" />
+                PREMIUM EXPLORER LOGUE
+              </div>
+              <h1 className="font-heading text-4xl sm:text-5xl md:text-6xl font-black tracking-tight leading-none text-white">
+                Guide to Exploring Singapore
               </h1>
               <p className="font-sans text-sm sm:text-base md:text-lg text-white/90 leading-relaxed font-normal">
-                Embark on a journey of self-discovery in the Lion City. From Michelin-starred street food to futuristic gardens, Singapore offers the world's most seamless and secure solo experience.
+                Embark on a curated journey of discovery in the Lion City. From Michelin-starred culinary alleys to futuristic architectural glass domes, Singapore offers an incredibly sophisticated, seamless, and secure urban experience.
               </p>
               <div className="flex flex-wrap gap-3 sm:gap-4 pt-2">
                 <button
-                  onClick={() => handleScrollTo("introduction")}
-                  className="bg-singapore-red text-white text-xs sm:text-sm font-bold px-6 sm:px-8 py-3 sm:py-4 rounded-xl hover:opacity-95 transition-all shadow-md cursor-pointer"
+                  onClick={() => handleScrollTo("interactive-map-section")}
+                  className="bg-singapore-red text-white text-xs sm:text-sm font-bold px-7 sm:px-9 py-3.5 sm:py-4.5 rounded-xl hover:opacity-95 hover:scale-102 hover:shadow-lg transition-all cursor-pointer"
                 >
                   Start Exploring
                 </button>
                 <button
                   onClick={() => setIsSafetyOpen(true)}
-                  className="border border-white/60 text-white text-xs sm:text-sm font-bold px-6 sm:px-8 py-3 sm:py-4 rounded-xl hover:bg-white hover:text-onyx transition-all backdrop-blur-xs cursor-pointer"
+                  className="border border-white/40 text-white text-xs sm:text-sm font-bold px-7 sm:px-9 py-3.5 sm:py-4.5 rounded-xl hover:bg-white hover:text-onyx hover:scale-102 hover:shadow-lg transition-all backdrop-blur-xs cursor-pointer"
                 >
-                  Safety Guide
+                  Safety &amp; Transit Guide
                 </button>
               </div>
             </div>
           </div>
         </header>
+
+        {/* Interactive Singapore Discovery Map */}
+        <SingaporeMap
+          onViewDetails={(activity) => setSelectedActivity(activity)}
+          favorites={favorites}
+          onToggleFavorite={handleToggleFavorite}
+          completed={completed}
+          onToggleCompleted={handleToggleCompleted}
+        />
 
         {/* 3. Introduction Section */}
         <section id="introduction" className="py-24 px-4 sm:px-8 md:px-16 max-w-7xl mx-auto scroll-mt-10">
@@ -394,10 +453,10 @@ export default function App() {
                 Overview
               </span>
               <h2 className="font-heading text-3xl sm:text-4xl font-extrabold text-onyx tracking-tight">
-                Why Singapore is the Solo Traveler's Haven
+                Why Singapore is a Premier Global Destination
               </h2>
               <p className="font-sans text-base text-slate leading-relaxed">
-                Singapore consistently ranks as one of the safest, cleanest, and most efficient cities globally. For the solo traveler, this means unparalleled freedom to explore vibrant heritage districts, world-class museums, and lush nature reserves without hesitation or compromise.
+                Singapore consistently ranks as one of the safest, cleanest, and most efficient cities globally. For locals and international visitors alike, this means unparalleled freedom to explore vibrant heritage districts, world-class museums, and lush nature reserves with ultimate peace of mind.
               </p>
               
               {/* Interactive Features List */}
@@ -423,7 +482,7 @@ export default function App() {
                     <Check className="w-4 h-4 font-extrabold" />
                   </span>
                   <span className="font-sans text-sm sm:text-base text-onyx font-medium">
-                    Incredible variety of clean food at hawker centers, perfect for single diners.
+                    Incredible variety of clean food at hawker centers, perfect for families, groups, and solo explorers.
                   </span>
                 </li>
               </ul>
@@ -478,15 +537,6 @@ export default function App() {
           </div>
         </section>
 
-        {/* Interactive Singapore Discovery Map */}
-        <SingaporeMap
-          onViewDetails={(activity) => setSelectedActivity(activity)}
-          favorites={favorites}
-          onToggleFavorite={handleToggleFavorite}
-          completed={completed}
-          onToggleCompleted={handleToggleCompleted}
-        />
-
         {/* 4. Interactive Persona Profiles / Itineraries Section */}
         <div id="itineraries" className="scroll-mt-10">
           <PersonaSection
@@ -508,7 +558,7 @@ export default function App() {
               A Safe, Seamless Journey Awaits
             </h2>
             <p className="font-sans text-base text-slate leading-relaxed max-w-2xl mx-auto">
-              With ultra-strict regulations, world-class clean transit, and English spoken everywhere, Singapore is the ideal proving ground for both first-time and seasoned solo adventurers. Read our comprehensive transit &amp; legal guides.
+              With ultra-strict regulations, world-class clean transit, and English spoken everywhere, Singapore is the ideal proving ground for everyone seeking a seamless, safe, and enriching travel experience. Read our comprehensive transit &amp; legal guides.
             </p>
             <button
               onClick={() => setIsSafetyOpen(true)}
@@ -526,10 +576,10 @@ export default function App() {
               Community Board
             </span>
             <h2 className="font-heading text-3xl sm:text-4xl font-extrabold text-onyx tracking-tight">
-              Solo SG Global Explorer Club
+              Explore SG Global Club
             </h2>
             <p className="font-sans text-sm sm:text-base text-slate leading-relaxed">
-              Interact with real experiences shared by solo travellers around the world. Write your own tips to share!
+              Interact with real experiences shared by travelers and locals around the world. Write your own tips to share!
             </p>
           </div>
 
@@ -543,7 +593,7 @@ export default function App() {
               Ready to Script Your Own Singapore Story?
             </h2>
             <p className="font-sans text-sm sm:text-base text-slate max-w-xl mx-auto leading-relaxed">
-              Download our comprehensive solo traveller app for offline maps, safety contacts, real-time community tips, and contactless transit guides.
+              Download our comprehensive explorer app for offline maps, safety contacts, real-time community tips, and contactless transit guides.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
               <button
@@ -561,6 +611,66 @@ export default function App() {
             </div>
           </div>
         </section>
+          </>
+        ) : (
+          /* Social / Disqus Forum Section */
+          <div className="pt-20 bg-background min-h-[calc(100vh-80px)]">
+            {/* Shorter Hero Banner for Social page */}
+            <div className="relative bg-onyx py-16 sm:py-24 text-white overflow-hidden border-b border-cloud">
+              {/* Background accent */}
+              <div className="absolute inset-0 z-0 opacity-20">
+                <div className="absolute top-10 left-10 w-96 h-96 bg-singapore-red rounded-full filter blur-[120px]" />
+                <div className="absolute bottom-10 right-10 w-96 h-96 bg-red-800 rounded-full filter blur-[120px]" />
+              </div>
+
+              <div className="relative z-10 px-4 sm:px-8 md:px-16 max-w-7xl mx-auto text-center space-y-4">
+                <div className="inline-flex items-center gap-2 px-3 py-1 bg-singapore-red/15 border border-singapore-red/30 rounded-full font-sans text-xs font-bold uppercase tracking-widest text-singapore-red">
+                  <MessageSquare className="w-3.5 h-3.5 animate-bounce" /> Community Hub
+                </div>
+                <h1 className="font-heading text-3xl sm:text-4xl md:text-5xl font-black tracking-tight leading-tight">
+                  Explore SG Global Discussion
+                </h1>
+                <p className="font-sans text-sm sm:text-base text-stone-300 max-w-2xl mx-auto leading-relaxed font-light">
+                  Join the premier community conversation. Share your custom travel itineraries, hawker center hacks, and safety tips for exploring Singapore.
+                </p>
+              </div>
+            </div>
+
+            {/* Disqus Card Container with pristine white layout */}
+            <div className="max-w-4xl mx-auto px-4 py-12">
+              <div className="bg-white rounded-3xl border border-cloud p-6 sm:p-10 shadow-sm">
+                <div className="flex items-center gap-3 border-b border-cloud pb-6 mb-8">
+                  <div className="p-3 bg-red-50 text-singapore-red rounded-2xl">
+                    <MessageSquare className="w-6 h-6" />
+                  </div>
+                  <div>
+                    <h2 className="font-heading text-lg sm:text-xl font-extrabold text-onyx">
+                      Interactive Explorer Forum
+                    </h2>
+                    <p className="text-xs text-slate">
+                      Disqus forum is synchronized globally. Refresh to view new comments.
+                    </p>
+                  </div>
+                </div>
+
+                {/* Disqus Widget */}
+                <div className="min-h-[400px]">
+                  <DisqusErrorBoundary>
+                    <DiscussionEmbed
+                      shortname="explore-sg"
+                      config={{
+                        url: window.location.origin + "/social",
+                        identifier: "explore-sg-main-social",
+                        title: "Explore SG Community Forum",
+                        language: "en_SG"
+                      }}
+                    />
+                  </DisqusErrorBoundary>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
 
       </main>
 
@@ -572,10 +682,10 @@ export default function App() {
               onClick={() => handleScrollTo("root")}
               className="font-heading text-2xl font-bold text-singapore-red tracking-wider cursor-pointer select-none hover:opacity-90 block"
             >
-              SOLO SG
+              EXPLORE SG
             </span>
             <p className="font-sans text-sm text-slate leading-relaxed">
-              Your premier guide to solo travel in Singapore. Navigating the city made simple, safe, and sophisticated.
+              Your premier guide to discovering Singapore. Navigating the city made simple, safe, and sophisticated for everyone.
             </p>
             <div className="flex gap-4 pt-2">
               <span className="text-xs text-slate font-semibold hover:text-singapore-red cursor-pointer transition-all">Facebook</span>
@@ -640,7 +750,7 @@ export default function App() {
         </div>
 
         <div className="max-w-7xl mx-auto mt-12 pt-8 border-t border-cloud flex flex-col sm:flex-row justify-between items-center gap-4 text-xs sm:text-sm text-slate">
-          <p>© 2024 Solo SG. All rights reserved.</p>
+          <p>© 2024 Explore SG. All rights reserved.</p>
           <div className="flex gap-6">
             <span className="hover:text-singapore-red cursor-pointer transition-all">Sitemap</span>
             <span className="hover:text-singapore-red cursor-pointer transition-all">Cookie Settings</span>
@@ -667,3 +777,58 @@ export default function App() {
     </div>
   );
 }
+
+interface DisqusErrorBoundaryProps {
+  children: React.ReactNode;
+}
+
+interface DisqusErrorBoundaryState {
+  hasError: boolean;
+  error: Error | null;
+}
+
+class DisqusErrorBoundary extends Component<DisqusErrorBoundaryProps, DisqusErrorBoundaryState> {
+  state: DisqusErrorBoundaryState;
+  props: DisqusErrorBoundaryProps;
+
+  constructor(props: DisqusErrorBoundaryProps) {
+    super(props);
+    this.state = { hasError: false, error: null };
+  }
+
+  static getDerivedStateFromError(error: Error): DisqusErrorBoundaryState {
+    return { hasError: true, error };
+  }
+
+  componentDidCatch(error: Error, errorInfo: React.ErrorInfo) {
+    console.error("Caught Disqus render/script error:", error, errorInfo);
+  }
+
+  render() {
+    if (this.state.hasError) {
+      return (
+        <div className="flex flex-col items-center justify-center text-center p-6 bg-stone-50 rounded-2xl border border-stone-200 space-y-4">
+          <div className="p-3 bg-amber-50 text-amber-700 rounded-full">
+            <svg className="w-8 h-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+            </svg>
+          </div>
+          <h3 className="font-heading font-bold text-onyx">Disqus Forum Currently Unavailable</h3>
+          <p className="text-xs text-slate max-w-md leading-relaxed">
+            Disqus comments may be blocked due to browser privacy settings, ad-blockers, or tracking protection. Try opening this app in a new tab or disabling content blockers.
+          </p>
+          <a
+            href={window.location.href}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex items-center gap-2 px-4 py-2 bg-singapore-red text-white text-xs font-bold rounded-xl shadow-md hover:bg-red-600 transition-all"
+          >
+            Open App in New Tab
+          </a>
+        </div>
+      );
+    }
+    return this.props.children;
+  }
+}
+

@@ -1,6 +1,6 @@
 {
-  "name": "Solo SG",
-  "description": "The ultimate solo travel guide to Singapore with tailored itineraries, interactive maps, and safety guides.",
+  "name": "Explore SG",
+  "description": "The ultimate interactive guide to discovering Singapore with tailored itineraries, interactive maps, and safety guides for locals and foreigners alike.",
   "requestFramePermissions": [],
   "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
 }

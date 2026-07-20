@@ -29,7 +29,7 @@ export const PERSONAS: Persona[] = [
         day: "Day 3",
         tag: "Artistic Soul",
         title: "National Gallery & Museum Hopping",
-        description: "Spend a contemplative day at the world's largest public collection of Singapore and Southeast Asian modern art. Perfect for a solo afternoon of reflection and inspiration.",
+        description: "Spend a contemplative day at the world's largest public collection of Singapore and Southeast Asian modern art. Perfect for a memorable afternoon of cultural discovery and inspiration.",
         image: "https://lh3.googleusercontent.com/aida/AP1WRLuNg6YIK5N2qHTkZsRw5nqgTAJvf4iZ4wZla4SNolbfUzadpNodjRR4A8TNm6jQQpwobJku7Gxb2TnjyUa4EZXLxSb40C-SnqWOehz1jo4OLZasS6kfYn1WpLEzkairee4UK0OwF0MAUmcWfVmpu4c51p3cBuGBfjvZfjXFs_0_AvAz7TR4Mpv5wgUVMS5grQzeckRy0Z3QeTKclEpEw7iKWo58SCWUQAjM7WOYJdpK2BZbXw-nzHUuEQY"
       }
     ]

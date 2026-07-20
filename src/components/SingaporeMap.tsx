@@ -64,7 +64,7 @@ export default function SingaporeMap({
       personaName: "Brandon",
       day: "Night 3",
       image: "https://lh3.googleusercontent.com/aida/AP1WRLs-IuPpDKoQNr_Et5rTtL3nz67-2fg0ljJoWsU5bqa3htl5YnC5wyXYD2xlB6qfnEiCBfoMHlJm5RYmiiyWeVFJoZfbg9tPxpmY3VNceOKup9wiOE3spkLFNH79ZquV1zZHGh2XXr4PD1vLm7dgohOxVBRalD91RpFf5ZJoQODFQ10Go--x_BolyKQVRtMDj06cR8pyThWhecYMaAPNy-RATiFsgrTmETY6rXuHiIHs37bhljZLuiPc52w",
-      shortDesc: "Clarke Quay's electric nightlife hub along the scenic Singapore River. Exceptionally safe for solo bar-hopping and meeting international travelers.",
+      shortDesc: "Clarke Quay's electric nightlife hub along the scenic Singapore River. Exceptionally safe and welcoming for bar-hopping, dining, and meeting people from around the world.",
       transit: "Clarke Quay MRT (NE5), Exit C",
       bestTime: "9:00 PM – Late",
       cost: "Varies ($15 - $40 bar cover)",
@@ -112,7 +112,7 @@ export default function SingaporeMap({
         day: "Day 3",
         tag: "Artistic Soul",
         title: "National Gallery & Museum Hopping",
-        description: "Spend a contemplative day at the world's largest public collection of Singapore and Southeast Asian modern art. Perfect for a solo afternoon of reflection and inspiration.",
+        description: "Spend a contemplative day at the world's largest public collection of Singapore and Southeast Asian modern art. Perfect for a memorable afternoon of cultural discovery and inspiration.",
         image: "https://lh3.googleusercontent.com/aida/AP1WRLuNg6YIK5N2qHTkZsRw5nqgTAJvf4iZ4wZla4SNolbfUzadpNodjRR4A8TNm6jQQpwobJku7Gxb2TnjyUa4EZXLxSb40C-SnqWOehz1jo4OLZasS6kfYn1WpLEzkairee4UK0OwF0MAUmcWfVmpu4c51p3cBuGBfjvZfjXFs_0_AvAz7TR4Mpv5wgUVMS5grQzeckRy0Z3QeTKclEpEw7iKWo58SCWUQAjM7WOYJdpK2BZbXw-nzHUuEQY"
       }
     },
@@ -184,7 +184,7 @@ export default function SingaporeMap({
       personaName: "Brandon",
       day: "Special",
       image: "https://lh3.googleusercontent.com/aida/AP1WRLtrldD0saDC1xeGrvnPfZvJbFS6EE0H6MubIQ6MW_5f5SIg0XeUdbr8pn_oXMi9-hA2dXvDKZpWhbkwxmY6BbACEOB7Qgu76PCZaE0XnKPL9PAM5Q3O6EJJDNz0yuuCzkrnCibC-YGcMyAYHemZV8S08S-J7Wm6rM0DKA8MhAD5TBtOzsfPZtjbwr6MVM0Blx1ijgtkdUv0_zjBPGcHiwpXXhLxFhEewZAxcsiUU0cb9sZS18No0OR0KZw",
-      shortDesc: "Tanjong Pagar and the central business district boast some of the finest mixology bars and high-end dining spots, with welcoming counter seats for solo travelers.",
+      shortDesc: "Tanjong Pagar and the central business district boast some of the finest mixology bars and high-end dining spots, perfect for dates, groups, and curious foodies.",
       transit: "Tanjong Pagar MRT (EW15) or Telok Ayer (DT18)",
       bestTime: "7:00 PM – 9:30 PM",
       cost: "$50 - $150 per person",
@@ -234,10 +234,10 @@ export default function SingaporeMap({
             <Sparkles className="w-4 h-4 animate-pulse" /> Geographic Itinerary Discovery
           </span>
           <h2 className="font-heading text-3xl sm:text-4xl font-extrabold text-onyx tracking-tight">
-            Interactive Solo Travel Map
+            Interactive Singapore Discovery Map
           </h2>
           <p className="font-sans text-sm sm:text-base text-slate leading-relaxed">
-            Every premium milestone spot is geographically mapped below. Tap any marker to unlock instant transport coordinates, costs, and tailored solo insights.
+            Every premium milestone spot is geographically mapped below. Tap any marker to unlock instant transport coordinates, costs, and tailored local insights.
           </p>
         </div>
 
@@ -253,11 +253,11 @@ export default function SingaporeMap({
               <p className="text-[11px] text-slate font-medium leading-tight">Click on any marker to explore local highlights.</p>
             </div>
 
-            {/* Interactive Map Wrapper */}
-            <div className="flex-1 w-full flex items-center justify-center py-6 relative">
+            {/* Interactive Map Wrapper - Plain White Canvas */}
+            <div className="flex-1 w-full flex items-center justify-center py-6 relative bg-white rounded-xl">
               <svg
                 viewBox="0 0 800 400"
-                className="w-full h-auto max-h-[380px] drop-shadow-md select-none"
+                className="w-full h-auto max-h-[380px] select-none"
                 xmlns="http://www.w3.org/2000/svg"
               >
                 {/* SVG Definitions for Gradients, Dropshadows, etc */}
@@ -265,105 +265,44 @@ export default function SingaporeMap({
                   <filter id="shadow" x="-5%" y="-5%" width="110%" height="110%">
                     <feDropShadow dx="1" dy="3" stdDeviation="4" floodColor="#000" floodOpacity="0.08" />
                   </filter>
-                  <linearGradient id="mainlandGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-                    <stop offset="0%" stopColor="#fafaf9" />
-                    <stop offset="100%" stopColor="#f5f5f4" />
-                  </linearGradient>
                   <linearGradient id="activeMarkerGrad" x1="0%" y1="0%" x2="0%" y2="100%">
                     <stop offset="0%" stopColor="#EE192F" />
                     <stop offset="100%" stopColor="#b91c1c" />
                   </linearGradient>
                 </defs>
 
-                {/* Faint Dotted Grid for Technical Visual Vibe */}
-                <g stroke="#e7e5e4" strokeWidth="0.5" strokeDasharray="5,5" opacity="0.4">
-                  <line x1="100" y1="0" x2="100" y2="400" />
-                  <line x1="200" y1="0" x2="200" y2="400" />
-                  <line x1="300" y1="0" x2="300" y2="400" />
-                  <line x1="400" y1="0" x2="400" y2="400" />
-                  <line x1="500" y1="0" x2="500" y2="400" />
-                  <line x1="600" y1="0" x2="600" y2="400" />
-                  <line x1="700" y1="0" x2="700" y2="400" />
-                  <line x1="0" y1="100" x2="800" y2="100" />
-                  <line x1="0" y1="200" x2="800" y2="200" />
-                  <line x1="0" y1="300" x2="800" y2="300" />
-                </g>
-
-                {/* Transit Line Simulation (Faint lines to bind spots together) */}
-                {/* East-West (Green) MRT Route line */}
+                {/* Geographically Resembling Singapore Mainland Shape - Single Continuous Line Art */}
                 <path
-                  d="M 120,240 Q 180,225 240,235 T 375,245 T 415,260 T 600,210"
+                  d="M 60,220
+                     C 55,235 70,250 90,255
+                     C 115,260 135,250 160,245
+                     C 185,240 210,250 240,260
+                     C 270,270 300,280 340,282
+                     C 360,283 365,295 370,305
+                     C 375,315 390,318 405,315
+                     C 415,312 412,295 420,285
+                     C 430,275 460,265 500,255
+                     C 550,242 610,225 670,205
+                     C 720,190 750,180 760,170
+                     C 770,160 755,148 740,148
+                     C 725,148 700,152 675,150
+                     C 650,148 640,132 650,128
+                     C 660,124 680,125 690,132
+                     C 695,136 685,144 675,144
+                     C 665,144 660,148 655,153
+                     C 650,158 630,158 610,152
+                     C 580,144 550,138 520,138
+                     C 490,138 460,132 430,130
+                     C 400,128 370,124 340,126
+                     C 310,128 280,132 270,132
+                     C 240,132 210,135 180,142
+                     C 150,150 120,165 95,188
+                     C 75,208 62,212 60,220 Z"
                   fill="none"
-                  stroke="#10b981"
-                  strokeWidth="2.5"
-                  strokeDasharray="2,5"
-                  opacity="0.6"
-                />
-
-                {/* Downtown Core Circle MRT Route line */}
-                <path
-                  d="M 375,245 A 25,25 0 1,1 435,270"
-                  fill="none"
-                  stroke="#3b82f6"
-                  strokeWidth="2.5"
-                  strokeDasharray="2,5"
-                  opacity="0.55"
-                />
-
-                {/* Simplified Singapore Mainland Shape */}
-                <path
-                  d="M 70,230 
-                     C 70,230 90,210 120,215
-                     C 145,210 165,185 200,180
-                     C 240,175 260,155 300,150
-                     C 340,145 380,140 430,140
-                     C 480,140 520,150 550,145
-                     C 580,140 600,155 630,155
-                     C 660,155 680,160 710,170
-                     C 740,180 755,180 770,195
-                     C 780,205 785,220 775,235
-                     C 765,245 745,260 715,270
-                     C 685,280 655,285 635,290
-                     C 615,295 575,295 545,290
-                     C 515,285 485,290 455,290
-                     C 425,290 405,295 385,300
-                     C 365,305 335,305 305,300
-                     C 275,295 245,295 225,295
-                     C 205,295 185,285 165,280
-                     C 145,275 115,265 95,255
-                     C 75,245 70,235 70,230 Z"
-                  fill="url(#mainlandGrad)"
-                  stroke="#d6d3d1"
-                  strokeWidth="2.5"
-                  filter="url(#shadow)"
-                  className="transition-colors duration-300"
-                />
-
-                {/* Pulau Ubin shape */}
-                <path
-                  d="M 645,130 C 655,125 680,125 690,132 C 695,136 685,144 675,144 C 660,144 650,138 645,130 Z"
-                  fill="url(#mainlandGrad)"
-                  stroke="#d6d3d1"
-                  strokeWidth="2"
-                  filter="url(#shadow)"
-                />
-
-                {/* Pulau Tekong shape */}
-                <path
-                  d="M 725,145 C 735,135 760,135 770,145 C 775,153 765,163 750,163 C 735,163 727,155 725,145 Z"
-                  fill="url(#mainlandGrad)"
-                  stroke="#d6d3d1"
-                  strokeWidth="2"
-                  filter="url(#shadow)"
-                />
-
-                {/* Sentosa Island shape */}
-                <path
-                  d="M 370,310 C 380,307 400,307 415,313 C 425,317 415,323 400,323 C 385,323 375,317 370,310 Z"
-                  fill="url(#mainlandGrad)"
-                  stroke="#d6d3d1"
-                  strokeWidth="2"
-                  filter="url(#shadow)"
+                  stroke="#1c1917"
+                  strokeWidth="1.5"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
                 />
 
                 {/* Render interactive markers */}
@@ -384,7 +323,7 @@ export default function SingaporeMap({
                       {/* Pulsing glow ring behind selected or hovered markers */}
                       {(isActive || isHovered) && (
                         <circle
-                          r="16"
+                          r="18"
                           fill="#EE192F"
                           opacity="0.25"
                           className="animate-ping"
@@ -393,7 +332,7 @@ export default function SingaporeMap({
 
                       {/* Smaller stable background ring */}
                       <circle
-                        r="8"
+                        r="9"
                         fill={isActive ? "#EE192F" : isDone ? "#10b981" : "#78716c"}
                         opacity={isActive || isHovered ? "0.4" : "0.15"}
                         className="transition-all duration-300"
@@ -401,7 +340,7 @@ export default function SingaporeMap({
 
                       {/* Precise Center marker point */}
                       <circle
-                        r="5.5"
+                        r="6"
                         fill={isActive ? "url(#activeMarkerGrad)" : isDone ? "#059669" : "#44403c"}
                         stroke="#ffffff"
                         strokeWidth="1.5"
@@ -442,7 +381,7 @@ export default function SingaporeMap({
                 </span>
               </div>
               <div className="flex gap-3 text-[10px] font-bold uppercase tracking-wider text-slate bg-stone-100 px-2.5 py-1 rounded-md">
-                <span className="text-emerald-700">● MRT Linkages Map</span>
+                <span className="text-emerald-700">● Modern Continuous Line Art</span>
               </div>
             </div>
           </div>

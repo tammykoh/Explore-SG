@@ -22,3 +22,4 @@ export interface SafetyTip {
   description: string;
   icon: string;
 }
+

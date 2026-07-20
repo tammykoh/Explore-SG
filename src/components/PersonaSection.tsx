@@ -235,7 +235,7 @@ export default function PersonaSection({
                   National Gallery &amp; Museum Hopping
                 </h3>
                 <p className="font-sans text-sm sm:text-base text-slate mb-8 leading-relaxed">
-                  Spend a contemplative day at the world's largest public collection of Singapore and Southeast Asian modern art. Perfect for a solo afternoon of reflection, cooling air conditioning, and peaceful inspiration.
+                  Spend a contemplative day at the world's largest public collection of Singapore and Southeast Asian modern art. Perfect for a memorable afternoon of cultural exploration, cooling air conditioning, and peaceful inspiration.
                 </p>
                 
                 <div className="flex flex-col sm:flex-row gap-4 justify-between items-start sm:items-center border-t border-cloud pt-6 mt-2">
