@@ -1,0 +1,6 @@
+{
+  "name": "Solo SG",
+  "description": "The ultimate solo travel guide to Singapore with tailored itineraries, interactive maps, and safety guides.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
