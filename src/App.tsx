@@ -27,6 +27,7 @@ import DownloadModal from "./components/DownloadModal";
 import ItineraryModal from "./components/ItineraryModal";
 import CommunityBoard from "./components/CommunityBoard";
 import PersonaSection from "./components/PersonaSection";
+import SingaporeMap from "./components/SingaporeMap";
 
 export default function App() {
   // Navigation & UI States
@@ -36,6 +37,15 @@ export default function App() {
   const [selectedActivity, setSelectedActivity] = useState<Activity | null>(null);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [showLoginToast, setShowLoginToast] = useState(false);
+  const [isScrolled, setIsScrolled] = useState(false);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      setIsScrolled(window.scrollY > 40);
+    };
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
   
   // Favorites & Completion trackers (Persisted in localStorage)
   const [favorites, setFavorites] = useState<string[]>(() => {
@@ -95,12 +105,12 @@ export default function App() {
     <div className="bg-background text-on-background font-sans min-h-screen flex flex-col selection:bg-singapore-red/10 selection:text-singapore-red">
       
       {/* 1. Header Navigation */}
-      <nav className="fixed top-0 left-0 right-0 h-20 bg-white/95 backdrop-blur-md border-b border-cloud z-40 px-4 sm:px-8 md:px-16 flex justify-between items-center">
+      <nav className={`fixed top-0 left-0 right-0 h-20 transition-all duration-300 z-40 px-4 sm:px-8 md:px-16 flex justify-between items-center ${isScrolled ? "bg-white/95 backdrop-blur-md border-b border-cloud shadow-sm text-onyx" : "bg-transparent border-b border-transparent text-white"}`}>
         <div className="flex items-center gap-10">
           {/* Logo */}
           <span
             onClick={() => handleScrollTo("root")}
-            className="font-heading text-xl sm:text-2xl font-extrabold text-singapore-red cursor-pointer tracking-wider select-none hover:opacity-90 transition-opacity"
+            className={`font-heading text-xl sm:text-2xl font-extrabold tracking-wider select-none cursor-pointer transition-all ${isScrolled ? "text-singapore-red hover:opacity-90" : "text-white hover:text-white/90"}`}
           >
             SOLO SG
           </span>
@@ -109,25 +119,31 @@ export default function App() {
           <div className="hidden md:flex gap-8 items-center">
             <button
               onClick={() => handleScrollTo("introduction")}
-              className="font-sans text-sm font-semibold text-onyx hover:text-singapore-red transition-all cursor-pointer"
+              className={`font-sans text-sm font-semibold transition-all cursor-pointer ${isScrolled ? "text-onyx hover:text-singapore-red" : "text-white/90 hover:text-white"}`}
             >
               Explore
             </button>
             <button
+              onClick={() => handleScrollTo("interactive-map-section")}
+              className={`font-sans text-sm font-semibold transition-all cursor-pointer ${isScrolled ? "text-onyx hover:text-singapore-red" : "text-white/90 hover:text-white"}`}
+            >
+              Map
+            </button>
+            <button
               onClick={() => handleScrollTo("personas-itineraries-container")}
-              className="font-sans text-sm font-semibold text-onyx hover:text-singapore-red transition-all cursor-pointer"
+              className={`font-sans text-sm font-semibold transition-all cursor-pointer ${isScrolled ? "text-onyx hover:text-singapore-red" : "text-white/90 hover:text-white"}`}
             >
               Itineraries
             </button>
             <button
               onClick={() => handleScrollTo("safety-insights")}
-              className="font-sans text-sm font-semibold text-onyx hover:text-singapore-red transition-all cursor-pointer"
+              className={`font-sans text-sm font-semibold transition-all cursor-pointer ${isScrolled ? "text-onyx hover:text-singapore-red" : "text-white/90 hover:text-white"}`}
             >
               Insights
             </button>
             <button
               onClick={() => handleScrollTo("community-section")}
-              className="font-sans text-sm font-semibold text-onyx hover:text-singapore-red transition-all cursor-pointer"
+              className={`font-sans text-sm font-semibold transition-all cursor-pointer ${isScrolled ? "text-onyx hover:text-singapore-red" : "text-white/90 hover:text-white"}`}
             >
               Community
             </button>
@@ -141,7 +157,7 @@ export default function App() {
           <div className="relative">
             <button
               onClick={() => setShowFavoritesDropdown(!showFavoritesDropdown)}
-              className="p-2 text-onyx hover:text-singapore-red hover:bg-stone-50 rounded-full transition-all relative cursor-pointer"
+              className={`p-2 rounded-full transition-all relative cursor-pointer ${isScrolled ? "text-onyx hover:text-singapore-red hover:bg-stone-50" : "text-white hover:text-white/90 hover:bg-white/10"}`}
               aria-label="Favorites list"
             >
               <Heart className={`w-5 h-5 ${favorites.length > 0 ? "text-singapore-red fill-current" : ""}`} />
@@ -256,7 +272,7 @@ export default function App() {
           {/* Mobile Menu Toggle */}
           <button
             onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-            className="p-2 text-onyx hover:bg-stone-50 rounded-lg md:hidden cursor-pointer"
+            className={`p-2 rounded-lg md:hidden cursor-pointer ${isScrolled ? "text-onyx hover:bg-stone-50" : "text-white hover:bg-white/15"}`}
             aria-label="Toggle menu"
           >
             {isMobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
@@ -273,12 +289,18 @@ export default function App() {
             exit={{ opacity: 0, height: 0 }}
             className="fixed top-20 left-0 right-0 bg-white border-b border-cloud z-30 md:hidden overflow-hidden shadow-lg"
           >
-            <div className="flex flex-col p-4 space-y-3 font-sans text-sm font-semibold">
+            <div className="flex flex-col p-4 space-y-3 font-sans text-sm font-semibold text-onyx">
               <button
                 onClick={() => handleScrollTo("introduction")}
                 className="w-full text-left py-2 px-3 hover:bg-stone-50 hover:text-singapore-red rounded-lg transition-all cursor-pointer"
               >
                 Explore
+              </button>
+              <button
+                onClick={() => handleScrollTo("interactive-map-section")}
+                className="w-full text-left py-2 px-3 hover:bg-stone-50 hover:text-singapore-red rounded-lg transition-all cursor-pointer"
+              >
+                Interactive Map
               </button>
               <button
                 onClick={() => handleScrollTo("personas-itineraries-container")}
@@ -304,7 +326,7 @@ export default function App() {
       </AnimatePresence>
 
       {/* Main Container */}
-      <main className="mt-20 flex-1">
+      <main className="mt-0 flex-1">
         
         {/* Login Welcome Toast Notification */}
         <AnimatePresence>
@@ -322,7 +344,7 @@ export default function App() {
         </AnimatePresence>
 
         {/* 2. Hero Header Banner */}
-        <header className="relative h-[75vh] min-h-[500px] sm:min-h-[600px] w-full flex items-center overflow-hidden">
+        <header className="relative h-[55vh] min-h-[380px] sm:min-h-[440px] w-full flex items-center overflow-hidden pt-20">
           <div className="absolute inset-0 z-0">
             <img
               alt="Solo Travel to Singapore"
@@ -455,6 +477,15 @@ export default function App() {
 
           </div>
         </section>
+
+        {/* Interactive Singapore Discovery Map */}
+        <SingaporeMap
+          onViewDetails={(activity) => setSelectedActivity(activity)}
+          favorites={favorites}
+          onToggleFavorite={handleToggleFavorite}
+          completed={completed}
+          onToggleCompleted={handleToggleCompleted}
+        />
 
         {/* 4. Interactive Persona Profiles / Itineraries Section */}
         <div id="itineraries" className="scroll-mt-10">
